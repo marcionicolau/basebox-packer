@@ -3,13 +3,13 @@
     "provisioner": "provisionerless",
     "provisioner_version": "",
     "provisioner_set_path": "",
-    "iso_url": "http://releases.ubuntu.com/14.04/ubuntu-14.04-server-amd64.iso",
-    "iso_checksum": "4d94f6111b8fe47da94396180ce499d8c0bb44f3"
+    "iso_url": "http://centos.ufms.br/6.5/isos/x86_64/CentOS-6.5-x86_64-netinstall.iso",
+    "iso_checksum": "3a9662cb65f9d59677d76acfdb73289da43b4599"
   },
   "builders": [{
-    "vm_name": "ubuntu1404",
+    "vm_name": "centos65",
     "type": "vmware-iso",
-    "guest_os_type": "ubuntu-64",
+    "guest_os_type": "centos-64",
     "http_directory": "http",
     "iso_url": "{{ user `iso_url` }}",
     "iso_checksum": "{{ user `iso_checksum` }}",
@@ -17,28 +17,9 @@
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_wait_timeout": "10000s",
-    "floppy_files": ["floppy/vmware9.compat_mm.patch", "floppy/vmware9.k3.8rc4.patch", "floppy/vmhgfs-d_count-kernel-3.11-tools-9.6.0.patch"],
     "tools_upload_flavor": "linux",
     "boot_command": [
-      "<esc><esc><enter><wait>",
-      "/install/vmlinuz auto",
-      " console-setup/ask_detect=false",
-      " console-setup/layoutcode=us",
-      " console-setup/modelcode=pc105",
-      " debconf/frontend=noninteractive",
-      " debian-installer=en_US",
-      " fb=false",
-      " initrd=/install/initrd.gz",
-      " kbd-chooser/method=us",
-      " keyboard-configuration/layout=USA",
-      " keyboard-configuration/variant=USA",
-      " locale=en_US",
-      " netcfg/get_domain=vm",
-      " netcfg/get_hostname=vagrant",
-      " noapic" ,
-      " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
-      " -- ",
-      "<enter>"
+      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks6.cfg<enter>"
     ],
     "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
     "disk_size": 10140,
@@ -49,28 +30,20 @@
     }
   },
   {
-    "vm_name": "ubuntu1404",
+    "vm_name": "centos65",
     "type": "virtualbox-iso",
     "http_directory": "http",
     "iso_url": "{{ user `iso_url` }}",
     "iso_checksum": "{{ user `iso_checksum` }}",
     "iso_checksum_type": "sha1",
-    "guest_os_type": "Ubuntu_64",
+    "guest_os_type": "RedHat_64",
     "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
     "virtualbox_version_file": ".vbox_version",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_wait_timeout": "10000s",
     "boot_command": [
-      "<esc><esc><enter><wait>",
-      "/install/vmlinuz noapic ",
-      "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
-      "debian-installer=en_US auto locale=en_US kbd-chooser/method=us ",
-      "hostname={{ .Name }} ",
-      "fb=false debconf/frontend=noninteractive ",
-      "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
-      "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
-      "initrd=/install/initrd.gz -- <enter>"
+      "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks6.cfg<enter>"
     ],
     "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
     "disk_size": 10140,
@@ -88,9 +61,9 @@
     ],
     "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
     "scripts": [
-      "script/base.sh",
-      "script/vagrant.sh",
+      "script/fix-slow-dns.sh",
       "script/sshd.sh",
+      "script/vagrant.sh",
       "script/vmtools.sh",
       "script/provisioner.sh",
       "script/cleanup.sh",
@@ -100,6 +73,6 @@
   "post-processors": [{
     "type": "vagrant",
     "keep_input_artifact": false,
-    "output": "../../{{.Provider}}/ubuntu1404-{{user `provisioner`}}{{user `provisioner_version`}}.box"
+    "output": "../../{{.Provider}}/centos65-{{user `provisioner`}}{{user `provisioner_version`}}.box"
   }]
 }
