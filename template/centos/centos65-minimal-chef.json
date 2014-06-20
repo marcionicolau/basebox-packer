@@ -1,8 +1,8 @@
 {
   "variables": {
-    "provisioner": "provisionerless",
-    "provisioner_version": "",
-    "provisioner_set_path": "",
+    "provisioner": "chef",
+    "provisioner_version": "latest",
+    "provisioner_set_path": "true",
     "iso_url": "http://centos.ufms.br/6.5/isos/x86_64/CentOS-6.5-x86_64-netinstall.iso",
     "iso_checksum": "3a9662cb65f9d59677d76acfdb73289da43b4599"
   },
@@ -68,7 +68,17 @@
       "script/provisioner.sh",
       "script/cleanup.sh",
       "script/zerodisk.sh"
-    ]
+    ]}, {
+    "type": "chef-solo",
+    "cookbook_paths": [ "/Users/marcio/chef-repo/cookbooks" ],
+    "run_list": [
+      "yum",
+      "yum-epel",
+      "selinux::permissive",
+      "postgresql",
+      "git"
+    ],
+    "json": {"postgresql": { "version": "9.3", "enable_pgdg_apt" : "true" }}
   }],
   "post-processors": [{
     "type": "vagrant",

@@ -2,25 +2,34 @@
   "variables": {
     "provisioner": "provisionerless",
     "provisioner_version": "",
-    "iso_url": "http://mirror.globo.com/fedora/linux/releases/20/Fedora/x86_64/iso/Fedora-20-x86_64-netinst.iso",
-    "iso_checksum": "376be7d4855ad6281cb139430606a782fd6189dcb01d7b61448e915802cc350f"
+    "iso_url": "http://cdimage.debian.org/cdimage/release/7.4.0/amd64/iso-cd/debian-7.4.0-amd64-netinst.iso",
+    "iso_checksum": "015b0eadeac8e5fb18c74f62d1cc06fb2fbe3eb5",
+    "iso_checksum_type": "sha1"
   },
   "builders": [{
-    "vm_name": "fedora20",
+    "vm_name": "debian74",
     "type": "vmware-iso",
-    "guest_os_type": "fedora-64",
+    "guest_os_type": "debian7-64",
     "http_directory": "http",
-    "iso_url": "{{ user `iso_url` }}",
-    "iso_checksum": "{{ user `iso_checksum` }}",
-    "iso_checksum_type": "sha256",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_wait_timeout": "10000s",
     "tools_upload_flavor": "linux",
     "boot_command": [
-      "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks-minimal.cfg<enter><enter>"
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=us",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
     ],
-    "floppy_files": ["floppy/vmware9.k3.8rc4.patch", "floppy/vmware9.compat_mm.patch", "floppy/vmware9.k3.9.vmhgfs.patch", "floppy/vmhgfs-d_count-kernel-3.11-tools-9.6.0.patch"],
     "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
     "disk_size": 10140,
     "vmx_data": {
@@ -30,20 +39,29 @@
     }
   },
   {
-    "vm_name": "fedora20",
+    "vm_name": "debian74",
     "type": "virtualbox-iso",
     "http_directory": "http",
-    "iso_url": "{{ user `iso_url` }}",
-    "iso_checksum": "{{ user `iso_checksum` }}",
-    "iso_checksum_type": "sha256",
-    "guest_os_type": "Fedora_64",
+    "iso_url": "{{user `iso_url`}}",
+    "iso_checksum": "{{user `iso_checksum`}}",
+    "iso_checksum_type": "{{user `iso_checksum_type`}}",
+    "guest_os_type": "Debian_64",
     "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
     "virtualbox_version_file": ".vbox_version",
     "ssh_username": "vagrant",
     "ssh_password": "vagrant",
     "ssh_wait_timeout": "10000s",
     "boot_command": [
-      "<tab> linux text biosdevname=0 ks=http://{{ .HTTPIP }}:{{ .HTTPPort}}/ks-minimal.cfg<enter><enter>"
+      "<esc><wait>",
+      "install",
+      " auto",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg",
+      " debian-installer=en_US",
+      " locale=en_US",
+      " keymap=us",
+      " netcfg/get_hostname=vagrant",
+      " netcfg/get_domain=vm ",
+      "<enter>"
     ],
     "shutdown_command": "echo 'vagrant'|sudo -S shutdown -h now",
     "disk_size": 10140,
@@ -71,6 +89,6 @@
   "post-processors": [{
     "type": "vagrant",
     "keep_input_artifact": false,
-    "output": "../../{{.Provider}}/fedora20-{{user `provisioner`}}{{user `provisioner_version`}}.box"
+    "output": "../../{{.Provider}}/debian74-{{user `provisioner`}}{{user `provisioner_version`}}.box"
   }]
 }
