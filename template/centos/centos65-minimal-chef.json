@@ -75,10 +75,8 @@
       "yum",
       "yum-epel",
       "selinux::permissive",
-      "postgresql",
       "git"
-    ],
-    "json": {"postgresql": { "version": "9.3", "enable_pgdg_apt" : "true" }}
+    ]
   }],
   "post-processors": [{
     "type": "vagrant",

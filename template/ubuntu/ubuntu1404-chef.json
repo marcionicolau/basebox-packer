@@ -105,7 +105,7 @@
       "rstudio::nginx", 
       "rstudio::pam"
     ],
-    "json": {"rstudio": { "nginx": { "location": "/rstudio/" } }}
+    "json": {"rstudio": { "nginx": { "location": "/rstudio/", "server_name": "localhost" } }}
   }],
   "post-processors": [{
     "type": "vagrant",
